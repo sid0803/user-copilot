@@ -1,5 +1,5 @@
 """
-Founder Brain — Rule Engine for User Copilot.
+Founder Brain — Rule Engine for Heartbeat System.
 
 This is the MOST IMPORTANT module in the system.
 

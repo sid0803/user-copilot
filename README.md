@@ -1,6 +1,8 @@
-# 💓 User Copilot
+# 💓 Heartbeat System
 
-An intelligent, multi-layer monitoring and summarization tool designed for **non-technical founders**. Stay informed without reading logs, dashboards, or mountains of Slack messages — get a plain-English digest every 30 minutes.
+> **This is a minimal prototype of the Heartbeat Digest system designed for non-technical founders.** It transforms operational noise into a 60-second executive decision brief.
+
+An intelligent, multi-layer monitoring and summarization tool. Stay informed without reading logs, dashboards, or mountains of Slack messages — get a plain-English digest every 30 minutes.
 
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -9,7 +11,38 @@ An intelligent, multi-layer monitoring and summarization tool designed for **non
 
 ## 🎯 The Problem
 
-Founders often feel "blind" to their project's technical progress. They either spend hours in technical meetings or lose situational awareness entirely. **User Copilot** fixes this by translating complex technical events — from Slack messages to stale GitHub PRs to overdue Notion tasks — into a 5-bullet-point executive digest, delivered to your desktop, Slack, or email.
+Founders often feel "blind" to their project's technical progress. They either spend hours in technical meetings or lose situational awareness entirely. **Heartbeat System** fixes this by translating complex technical events — from Slack messages to stale GitHub PRs to overdue Notion tasks — into a 5-bullet-point executive digest, delivered to your desktop, Slack, or email.
+
+---
+
+## 🧠 Architecture Overview
+
+**Pipeline:**
+`Ingestion` → `Classification` → `Summarization` → `Delivery`
+
+⚙️ **Key Components:**
+- **`classifier.py`** (Rule Engine): Intelligent classification of raw data into urgent business signals.
+- **`summarizer.py`**: AI-powered generation of the founder-friendly decision brief.
+- **`main.py`**: The central heartbeat orchestration engine.
+
+---
+
+## 📊 Sample Output
+
+What a founder receives every 30 minutes:
+
+🚨 **URGENT — DO THESE NOW:**
+1. Reply to **Client Acme** — 14h without response risks churn.
+2. Unblock **PR #42** (Login Fix) — it's been stale for 26h.
+
+👀 **WATCH CLOSELY:**
+• **Notion Task** 'Q3 Roadmap' is 2h overdue.
+
+✅ **RUNNING SMOOTH:**
+• All API health checks are UP.
+• 12 commits pushed today across 3 branches.
+
+📌 **BOTTOM LINE:** Focus on the Acme response immediately; the rest of the system is healthy.
 
 ---
 
@@ -28,7 +61,7 @@ Founders often feel "blind" to their project's technical progress. They either s
 
 ## 🏗️ System Architecture
 
-User Copilot follows a **6-layer architecture** where each layer converts raw signals into cleaner, more actionable output.
+Heartbeat System follows a **6-layer architecture** where each layer converts raw signals into cleaner, more actionable output.
 
 ```mermaid
 graph TD
@@ -109,8 +142,8 @@ graph TD
 
 ```bash
 # Clone the repo
-git clone https://github.com/sid0803/user-copilot.git
-cd user-copilot
+git clone https://github.com/sid0803/heartbeat-system.git
+cd heartbeat-system
 
 # Install dependencies
 pip install -r requirements.txt
@@ -129,25 +162,6 @@ Edit `.env` and add your keys (you only need one):
 GEMINI_API_KEY=your-free-gemini-key    # recommended — free tier
 ANTHROPIC_API_KEY=sk-ant-...           # optional
 OPENAI_API_KEY=sk-...                  # optional
-```
-
-Set your preferred AI provider in `heartbeat/config/settings.yaml`:
-
-```yaml
-ai:
-  provider: "auto"   # auto | gemini | anthropic | openai
-  # "auto" tries Gemini first, then Anthropic, then OpenAI
-```
-
-Set your project path and any health endpoints to monitor:
-
-```yaml
-connectors:
-  git:
-    repo_path: "."          # path to your project folder
-  health:
-    endpoints:
-      - "https://your-api.com/health"
 ```
 
 ---
@@ -191,21 +205,6 @@ python main.py
 | **Health** | Endpoint URLs in settings.yaml | Add your API/dashboard URLs |
 | **Git / Files** | `repo_path` in settings.yaml | Local folder path |
 
-> All connectors fall back to **rich, realistic mock data** when credentials are absent.
-
----
-
-## 📬 Delivery Modes
-
-Set `delivery.preferred` in `heartbeat/config/settings.yaml`:
-
-| Value | What happens |
-|---|---|
-| `desktop` | Cross-platform desktop notification (default) |
-| `slack` | Sends digest to Slack via incoming webhook |
-| `email` | Formatted HTML email via SMTP (works with Gmail App Passwords) |
-| `all` | Sends to all three simultaneously |
-
 ---
 
 ## 🛡️ Reliability & Security
@@ -238,4 +237,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
-> 🔗 [github.com/sid0803/user-copilot](https://github.com/sid0803/user-copilot) · **Made for Founders. Built by humans. Powered by AI.**
+> 🔗 [github.com/sid0803/heartbeat-system](https://github.com/sid0803/heartbeat-system) · **Made for Founders. Built by humans. Powered by AI.**

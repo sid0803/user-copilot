@@ -1,5 +1,5 @@
 """
-Business Signal Definitions for User Copilot.
+Business Signal Definitions for Heartbeat System.
 
 This module defines the core data model for the Intelligence Layer.
 An `Event` is a structured business signal — not a raw data point,

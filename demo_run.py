@@ -1,5 +1,5 @@
 """
-🎬 USER-COPILOT — Live Demo (with Founder Brain Intelligence Layer)
+🎬 HEARTBEAT SYSTEM — Live Demo (with Founder Brain Intelligence Layer)
 ====================================================================
 Demonstrates all 6 layers including the new Rule Engine.
 No API keys needed — runs on rich realistic mock data.
@@ -18,7 +18,7 @@ def step(n, total, label): print(f"\n{cyan(bold(f'  STEP {n}/{total}'))} {bold(l
 def pause(s=0.35): time.sleep(s)
 
 print("\n" + "═"*65)
-print(bold("  💓  USER-COPILOT  —  Founder Intelligence System"))
+print(bold("  💓  HEARTBEAT SYSTEM  —  Founder Intelligence System"))
 print(bold("  Full Live Demo  |  2026-03-27  22:48 IST"))
 print("═"*65)
 print(dim("  Demonstrating all 6 layers including the new Founder Brain.\n"))
@@ -147,4 +147,5 @@ print(f"  {cyan(' signals into prioritized decision recommendations for founders
 print(f"\n  {bold('Next:')}")
 print(f"  • Add GEMINI_API_KEY to .env for real AI  →  {cyan('https://aistudio.google.com/')}")
 print(f"  • Start the loop: {cyan('python main.py')}")
-print(f"\n{dim('  github.com/sid0803/user-copilot')}\n")
+print(f"\n{dim('  github.com/sid0803/heartbeat-system')}\n")
+
