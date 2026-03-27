@@ -62,10 +62,10 @@ print(f"\n  {bold(f'Total raw signals: {len(raw_data)}')}")
 pause(0.5)
 
 # ─── STEP 2 ───────────────────────────────────────────────────────────────────
-step(2, 5, "Normalising Events (Event Processor)")
+step(2, 5, "Normalising & Deduplicating (Event Engine)")
 processor = EventProcessor()
 events    = processor.process(raw_data)
-print(f"  ✅ {len(events)} unique events with enriched schema (severity · type · age_hours)")
+print(f"  ✅ {len(events)} unique events with cross-source deduplication.")
 pause(0.5)
 
 # ─── STEP 3 — THE NEW LAYER ──────────────────────────────────────────────────
