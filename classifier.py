@@ -18,7 +18,7 @@ Design principles:
 import re
 from typing import List, Dict, Any
 
-from .signals import (
+from signals import (
     BusinessEvent, Severity,
     CLIENT_RISK, DEADLINE_RISK, SYSTEM_FAILURE,
     TEAM_BLOCKER, REVENUE_RISK, COMMUNICATION_GAP, OPPORTUNITY_SIGNAL,

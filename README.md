@@ -1,48 +1,32 @@
-# 💓 Heartbeat System
+# Heartbeat Digest MVP
 
-> **This is a minimal prototype of the Heartbeat Digest system designed for non-technical founders.** It transforms operational noise into a 60-second executive decision brief.
-
-An intelligent, multi-layer monitoring and summarization tool. Stay informed without reading logs, dashboards, or mountains of Slack messages — get a plain-English digest every 30 minutes.
-
-[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+This is a minimal prototype of a heartbeat system designed to provide non-technical founders with a concise, actionable digest every 30 minutes.
 
 ---
 
-## 🎯 The Problem
-
-Founders often feel "blind" to their project's technical progress. They either spend hours in technical meetings or lose situational awareness entirely. **Heartbeat System** fixes this by translating complex technical events — from Slack messages to stale GitHub PRs to overdue Notion tasks — into a 5-bullet-point executive digest, delivered to your desktop, Slack, or email.
-
----
-
-## 🧠 Architecture Overview
+## 🧠 Architecture
 
 **Pipeline:**
-`Ingestion` → `Classification` → `Summarization` → `Delivery`
+Ingestion → Classification → Summarization → Delivery
 
-⚙️ **Key Components:**
-- **`classifier.py`** (Rule Engine): Intelligent classification of raw data into urgent business signals.
-- **`summarizer.py`**: AI-powered generation of the founder-friendly decision brief.
-- **`heartbeat.py`**: The central heartbeat orchestration engine.
+**Components:**
+- `heartbeat.py` → orchestrator
+- `classifier.py` → urgency detection
+- `summarizer.py` → digest generation
 
 ---
 
 ## 📊 Sample Output
 
-What a founder receives every 30 minutes:
+🔴 **ACTION REQUIRED:**
+- Client unhappy with delay
 
-🚨 **URGENT — DO THESE NOW:**
-1. Reply to **Client Acme** — 14h without response risks churn.
-2. Unblock **PR #42** (Login Fix) — it's been stale for 26h.
+🟡 **FOR AWARENESS:**
+- Task completed
 
-👀 **WATCH CLOSELY:**
-• **Notion Task** 'Q3 Roadmap' is 2h overdue.
+✅ **ALL CLEAR**
 
-✅ **RUNNING SMOOTH:**
-• All API health checks are UP.
-• 12 commits pushed today across 3 branches.
-
-📌 **BOTTOM LINE:** Focus on the Acme response immediately; the rest of the system is healthy.
+---
 
 ---
 
