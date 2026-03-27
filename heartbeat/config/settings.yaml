@@ -1,0 +1,22 @@
+connectors:
+  slack:
+    channel_ids: ["C12345", "C67890"]
+  notion:
+    page_ids: ["abc-123"]
+  health:
+    endpoints: 
+      - "https://api.founderproject.com/health"
+      - "https://dashboard.founderproject.com"
+  git:
+    repo_path: "." # Path to the project you want to monitor
+
+delivery:
+  preferred: "macos" # slack, macos, email
+  slack_webhook: "https://hooks.slack.com/services/XXX"
+
+ai:
+  provider: "anthropic"
+  model: "claude-3-haiku"
+
+timing:
+  interval_minutes: 30

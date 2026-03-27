@@ -1,0 +1,5 @@
+pyyaml
+requests
+anthropic
+python-dotenv
+# plyer # Optional for better notifications

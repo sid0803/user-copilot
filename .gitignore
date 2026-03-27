@@ -1,0 +1,10 @@
+.env
+heartbeat/db/heartbeat.db
+__pycache__/
+*.pyc
+.venv/
+env/
+node_modules/
+dist/
+build/
+.DS_Store
