@@ -1,119 +1,142 @@
-# 💓 Founder Heartbeat System
+# 💓 User Copilot
 
-An intelligent, lightweight monitoring and summarization tool designed for **non-technical founders**. Stay informed without reading logs, dashboards, or mountains of Slack messages.
+An intelligent monitoring and summarization tool for **non-technical founders**. Stay informed across your entire business stack — no logs, no dashboards, no Slack marathon.
 
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 🎯 The Problem
-Founders often feel "blind" to their project's technical progress. They either spend hours in technical meetings or lose situational awareness. **Heartbeat** fixes this by translating complex technical events into 3-bullet-point executive digests.
+---
 
-## ✨ Key Features
-- **30-Minute Check-in**: Runs automatically, checking for system activity on MacOS, Windows, and Linux.
-- **AI-Powered Digests**: Uses **Claude (Anthropic)** to turn technical jargon into plain business value.
-- **Full Project Mapping**: Scans any local folder (Git or no Git) to explain what a project is and how it’s structured.
-- **Daily Executive Summary**: A "Big Picture" report delivered every morning at 8:00 AM for the previous day.
-- **Priority Scoring**: Intelligence that flags **URGENT** or **CRITICAL** issues instantly.
-- **Founder Feedback Loop**: Coach the AI directly via `feedback.txt` to adjust summarization styles.
+## 🎯 The Problem
+
+Founders feel "blind" to project health. **Heartbeat** fixes this by translating technical events into a 2-minute executive digest, delivered every 30 minutes to your desktop, Slack, or email.
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ 5-Layer Architecture
 
-Heartbeat follows a **modular, sensor-based architecture** that prioritizes simplicity and reliable delivery.
-
-```mermaid
-graph TD
-    subgraph Sensors [Connectors / Data Sources]
-        S1[Slack & Email]
-        S2[Git History]
-        S3[Project Files]
-        S4[Health Endpoints]
-    end
-
-    subgraph Core [The Engine]
-        P1[Event Processor] --> |Normalized Events| SR[AI Summarizer]
-        SR --> |Applying Feedback| SR
-        DB[(SQLite Logs)] <--> |Storage| SR
-    end
-
-    subgraph Output [Delivery Mechanisms]
-        D1[Desktop Notification]
-        D2[Slack DM]
-        D3[Email Digest]
-    end
-
-    Sensors --> |Raw Data| P1
-    SR --> |Digest| Output
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  LAYER 0 │  Heartbeat Engine           (scheduler + activity)   │
+├─────────────────────────────────────────────────────────────────┤
+│  LAYER 1 │  Data Connectors            Slack · Gmail · GitHub   │
+│          │                             Notion · Git · Health     │
+├─────────────────────────────────────────────────────────────────┤
+│  LAYER 2 │  Event Engine               Enrich · Score · Dedup   │
+│          │                             (type, severity, age)     │
+├─────────────────────────────────────────────────────────────────┤
+│  LAYER 3 │  AI Summarizer (your choice)                         │
+│          │  ┌──────────┐  ┌───────────┐  ┌─────────┐           │
+│          │  │  Gemini  │  │ Anthropic │  │  OpenAI │           │
+│          │  │  (free)  │  │  Claude   │  │ GPT-4o  │           │
+│          │  └──────────┘  └───────────┘  └─────────┘           │
+│          │  → auto mode tries Gemini first, then falls back     │
+├─────────────────────────────────────────────────────────────────┤
+│  LAYER 4 │  Delivery Layer             Desktop · Slack · Email  │
+└─────────────────────────────────────────────────────────────────┘
+                        ↓
+          💓 Digest in your preferred channel
 ```
 
 ---
 
-### Component Overview
-1. **Sensors (Connectors)**: High-performance modules that fetch data across your business stack.
-2. **Event Processor**: The "Logic Center" that filters noise and assigns **Priority Scores**.
-3. **AI Summarizer**: A Claude-powered engine that reads your **Feedback Loop** to speak your language.
-4. **Delivery Engine**: A unified notification system that keeps you informed across any device.
-5. **Persistent Storage**: Secure SQLite database used to generate the **Daily Executive Summary**.
+## ✨ Features
 
-## 🚀 Getting Started
+| Feature | Detail |
+|---|---|
+| **7 Connectors** | Slack, Gmail, GitHub, Notion, Git, Health checks, File scan |
+| **3 AI Providers** | Gemini (free) · Anthropic Claude · OpenAI GPT-4o — switchable |
+| **Smart Triage** | Urgency decay: stale events auto-escalate after 4 hours |
+| **3 Delivery Modes** | Desktop notification · Slack webhook · HTML email |
+| **Daily 8AM Summary** | Big-picture executive digest of the last 24 hours |
+| **Mock Mode** | Works fully without any API keys — great for demos |
+| **Feedback Loop** | Edit `heartbeat/config/feedback.txt` to personalise digests |
 
-### 1. Prerequisites
-- Python 3.8+
-- [Anthropic API Key](https://console.anthropic.com/)
-- Slack Webhook URL (Optional)
+---
 
-### 2. Installation
+## 🚀 Quick Start
+
+### 1. Install dependencies
 ```bash
-# Clone the repository (or copy the files)
-cd founder-heartbeat
-
-# Install dependencies
 pip install -r requirements.txt
 ```
 
-### 3. Configuration
-Rename `.env.example` to `.env` (or create one) and add your keys:
-```env
-SLACK_TOKEN=xoxb-...
-ANTHROPIC_API_KEY=sk-ant-...
-SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...
+### 2. Configure
+```bash
+cp .env.example .env
+# Edit .env — add at least one AI key (Gemini is free!)
 ```
 
-Edit `heartbeat/config/settings.yaml` to point to your specific project paths and health endpoints.
+Get a free Gemini key at → **https://aistudio.google.com/** (no credit card)
 
----
+### 3. Set your AI provider in `heartbeat/config/settings.yaml`
+```yaml
+ai:
+  provider: "auto"   # auto | gemini | anthropic | openai
+```
 
-## 🛠️ Usage
-
-### Quick Test
-Verify everything is working (mock mode) without waiting 30 minutes:
+### 4. Run a test (works without any keys — uses mock data)
 ```bash
 python test_heartbeat.py
 ```
 
-### Production Run
-Start the background monitoring loop:
+### 5. Start the monitoring loop
 ```bash
 python main.py
 ```
 
 ---
 
-## 🛡️ Reliability & Security
-- **Local First**: All heavy code scanning happens on your machine.
-- **Active Detection**: Skips execution when you're away to save API costs and battery.
-- **Safe Fallbacks**: If the AI or Slack is down, the system logs errors locally and continues monitoring.
+## 🔌 Connector Setup
 
-## 🗺️ Roadmap
-- [x] Cross-platform activity detection
-- [x] Full codebase mapping
-- [x] Daily executive summaries (8:00 AM)
-- [ ] Voice command status queries
-- [ ] Weekly "CEO Performance" reports
+| Connector | Needs | How |
+|---|---|---|
+| **Slack** | `SLACK_TOKEN` | Create Slack App → OAuth & Permissions → `channels:history` |
+| **Gmail** | `gmail_credentials.json` | Google Cloud → Gmail API → Download credentials |
+| **GitHub** | `GITHUB_TOKEN` | Settings → Developer Settings → Personal Access Tokens |
+| **Notion** | `NOTION_TOKEN` + `database_id` | notion.so/my-integrations + share DB with integration |
+| **Health** | Endpoint URLs | Add URLs to `settings.yaml → connectors.health.endpoints` |
+| **Git / Files** | Local path | Set `settings.yaml → connectors.git.repo_path` |
 
-## 📄 License
-Distributed under the MIT License. See `LICENSE` for more information.
+> All connectors fall back to **rich mock data** when credentials are absent.
 
 ---
-**Made for Founders. Powered by AI.**
+
+## 📬 Delivery Modes
+
+Set `delivery.preferred` in `settings.yaml`:
+
+| Value | What happens |
+|---|---|
+| `desktop` | Cross-platform desktop notification (default) |
+| `slack` | Sends digest to your Slack via webhook |
+| `email` | HTML email via SMTP (use Gmail App Password) |
+| `all` | Sends to all three simultaneously |
+
+---
+
+## 🛡️ Reliability & Security
+
+- **Local First** — all scanning runs on your machine. Nothing leaves without your keys.
+- **Activity-Aware** — skips cycles when system idle > 30 min (saves API costs).
+- **Graceful Degradation** — every layer has a fallback; the system never crashes silently.
+
+---
+
+## 🗺️ Roadmap
+
+- [x] Cross-platform activity detection
+- [x] Full codebase mapping
+- [x] Daily 8AM executive summaries
+- [x] Multi-provider AI (Gemini / Claude / GPT-4o)
+- [x] Gmail, GitHub, Notion connectors
+- [x] Email digest delivery
+- [ ] Voice command status queries
+- [ ] Weekly CEO Performance report
+
+---
+
+**Made for Founders. Built by humans. Powered by AI.**
+
+> 🔗 [github.com/sid0803/user-copilot](https://github.com/sid0803/user-copilot)
+

@@ -1,40 +1,107 @@
-from typing import List, Dict, Any
+import time
+import hashlib
+from typing import List, Dict, Any, Set
+
+# ── Keyword maps ────────────────────────────────────────────────────────────
+CRITICAL_KEYWORDS = {"broken", "critical", "down", "outage", "emergency", "failed", "crash"}
+URGENT_KEYWORDS   = {"urgent", "error", "deadline", "money", "immediate", "overdue", "waiting", "blocker"}
+CLIENT_SIGNALS    = {"client", "customer", "partner", "investor", "stakeholder"}
+
+# ── Event-type inference ─────────────────────────────────────────────────────
+def _infer_type(source: str, content: str) -> str:
+    c = content.lower()
+    if source == "health_check":
+        return "service_outage" if "down" in c else "service_health"
+    if source == "slack":
+        return "client_message" if any(s in c for s in CLIENT_SIGNALS) else "team_update"
+    if source == "gmail":
+        return "client_email"
+    if source == "github":
+        return "pr_stale" if "pr" in c or "pull" in c else "issue_open"
+    if source == "notion":
+        return "task_overdue"
+    if source in ("git_project", "full_project_analysis"):
+        return "code_activity"
+    return "general"
+
+# ── Client name extraction (best-effort) ─────────────────────────────────────
+def _extract_client(content: str) -> str:
+    import re
+    # Patterns like "Client X", "from: Name", "re: Company"
+    m = re.search(r"(client|customer|from)[:\s]+([A-Z][a-zA-Z]+)", content)
+    return m.group(2) if m else ""
+
+# ── Suggested action map ─────────────────────────────────────────────────────
+_ACTION_MAP = {
+    "client_message": "Reply to client message within 2 hours",
+    "client_email":   "Review and respond to client email",
+    "service_outage": "Alert engineering team immediately",
+    "pr_stale":       "Review and merge or close the PR",
+    "task_overdue":   "Assign or reschedule the overdue task",
+    "issue_open":     "Triage and assign the open issue",
+    "code_activity":  "Review recent commits for quality",
+    "team_update":    "Acknowledge team update",
+    "service_health": None,
+    "general":        None,
+}
+
 
 class EventProcessor:
     def __init__(self):
-        pass
+        self._seen_hashes: Set[str] = set()  # For deduplication within a session
+
+    def _event_hash(self, source: str, content: str) -> str:
+        return hashlib.md5(f"{source}::{content[:80]}".encode()).hexdigest()
 
     def process(self, raw_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Normalize and filter events with enhanced priority scoring."""
+        """Normalise, enrich and prioritise raw connector data."""
         processed_events = []
-        
-        # Keywords that trigger high priority
-        URGENT_KEYWORDS = ["urgent", "broken", "critical", "down", "error", "deadline", "money", "client", "immediate"]
-        
+        now = time.time()
+
         for item in raw_data:
-            content = item.get("content", "").lower()
+            raw_content = item.get("content", "") or f"Status report for {item.get('url','unknown')}"
+            source      = item.get("source", "unknown")
+            content_lc  = raw_content.lower()
+
+            # ── Deduplication ──────────────────────────────────────────────
+            h = self._event_hash(source, raw_content)
+            if h in self._seen_hashes:
+                continue
+            self._seen_hashes.add(h)
+
+            # ── Severity ───────────────────────────────────────────────────
             severity = "INFO"
-            
-            # 1. Check connector-provided priority
             if item.get("priority") == "high" or item.get("status") == "DOWN":
                 severity = "CRITICAL"
-                
-            # 2. Keyword-based override
-            if any(kw in content for kw in URGENT_KEYWORDS):
-                severity = "URGENT" if severity != "CRITICAL" else "CRITICAL"
-            
-            # 3. Connector specific logic
-            if item.get("source") == "health_check" and item.get("status") == "DOWN":
+            if any(kw in content_lc for kw in CRITICAL_KEYWORDS):
                 severity = "CRITICAL"
+            elif any(kw in content_lc for kw in URGENT_KEYWORDS) and severity != "CRITICAL":
+                severity = "URGENT"
+
+            # ── Age & urgency decay ────────────────────────────────────────
+            ts        = item.get("timestamp") or now
+            age_hours = round((now - float(ts)) / 3600, 1)
+            if age_hours >= 4 and severity == "INFO":
+                severity = "URGENT"  # Stale items deserve attention
+
+            # ── Semantic enrichment ────────────────────────────────────────
+            event_type       = _infer_type(source, raw_content)
+            client           = item.get("client") or _extract_client(raw_content)
+            suggested_action = _ACTION_MAP.get(event_type)
 
             processed_events.append({
-                "source": item.get("source"),
-                "content": item.get("content") or f"Status report for {item.get('url', 'unknown')}",
-                "severity": severity,
-                "timestamp": item.get("timestamp")
+                "source":           source,
+                "content":          raw_content,
+                "severity":         severity,
+                "type":             event_type,
+                "client":           client,
+                "age_hours":        age_hours,
+                "suggested_action": suggested_action,
+                "timestamp":        ts,
             })
-        
-        # Sort so CRITICAL and URGENT are at the top
-        processed_events.sort(key=lambda x: 0 if x['severity'] == "CRITICAL" else 1 if x['severity'] == "URGENT" else 2)
-        
+
+        # Sort: CRITICAL → URGENT → INFO
+        _order = {"CRITICAL": 0, "URGENT": 1, "INFO": 2}
+        processed_events.sort(key=lambda x: _order.get(x["severity"], 3))
         return processed_events
+

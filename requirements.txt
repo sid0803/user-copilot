@@ -1,5 +1,19 @@
+# Core
 pyyaml
 requests
-anthropic
 python-dotenv
-# plyer # Optional for better notifications
+
+# AI Providers (install for whichever you use)
+google-generativeai       # Gemini — free tier https://aistudio.google.com/
+anthropic                 # Claude — https://console.anthropic.com/
+openai                    # GPT-4o-mini — https://platform.openai.com/
+
+# Connectors
+slack-sdk                 # Slack messages
+google-api-python-client  # Gmail API
+google-auth-oauthlib      # Gmail OAuth
+google-auth-httplib2      # Gmail auth transport
+
+# Delivery
+plyer                     # Desktop notifications (cross-platform)
+

@@ -2,21 +2,28 @@ connectors:
   slack:
     channel_ids: ["C12345", "C67890"]
   notion:
-    page_ids: ["abc-123"]
+    database_id: "abc-123"   # Your Notion database ID
   health:
-    endpoints: 
+    endpoints:
       - "https://api.founderproject.com/health"
       - "https://dashboard.founderproject.com"
   git:
-    repo_path: "." # Path to the project you want to monitor
+    repo_path: "."            # Path to the project you want to monitor
+  github:
+    repo: ""                  # "owner/repo-name" e.g. "mycompany/main-app"
+  gmail:
+    credentials_path: "heartbeat/config/gmail_credentials.json"
 
 delivery:
-  preferred: "macos" # slack, macos, email
+  preferred: "desktop"        # Options: desktop | slack | email | all
   slack_webhook: "https://hooks.slack.com/services/XXX"
 
 ai:
-  provider: "anthropic"
-  model: "claude-3-haiku"
+  # Set provider to the model you prefer. Keys are read from .env
+  # Options: auto | gemini | anthropic | openai
+  # "auto" will try gemini first, then anthropic, then openai
+  provider: "auto"
 
 timing:
   interval_minutes: 30
+

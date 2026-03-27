@@ -1,5 +1,6 @@
 import yaml
 import os
+from typing import Dict
 from dotenv import load_dotenv
 
 load_dotenv()
