@@ -8,5 +8,10 @@ __pycache__/
 env/
 node_modules/
 dist/
+dist-ssr/
 build/
 .DS_Store
+*.local
+credentials.json
+gmail_credentials.json
+.vscode/

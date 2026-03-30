@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+pyyaml
+requests
+python-dotenv
+google-generativeai
+anthropic
+openai
+slack-sdk
+google-api-python-client
+google-auth-oauthlib
+google-auth-httplib2
